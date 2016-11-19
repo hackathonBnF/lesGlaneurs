@@ -36,3 +36,10 @@ def create_coword(conn, doc_id, word1, word2):
     conn.execute("insert into coword (doc_id, word1, word2) values (%d, '%s', '%s')" % (doc_id, word1, word2))
     conn.execute("insert into coword (doc_id, word1, word2) values (%d, '%s', '%s')" % (doc_id, word2, word1))
     conn.commit()
+
+def create_quote(conn, doc_id, word, quote):
+    word = re.sub("'", "''", word)
+    quote = re.sub("'", "''", quote)
+    conn.execute("insert into quote (doc_id, word, quote) values (%d, '%s', '%s')" % (doc_id, word, quote))
+    conn.commit()
+

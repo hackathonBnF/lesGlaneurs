@@ -57,7 +57,7 @@ def is_valid_ark(ark):
     return ark.startswith('http://' + HOST)
 
 
-def process_body(id, body, date):
+def process_body(id, body, date, word):
     '''
     Traite le corps d'un document
     :param body:
@@ -87,21 +87,24 @@ def process_body(id, body, date):
     finder.apply_freq_filter(2)
     colloc = finder.nbest(nltk.collocations.BigramAssocMeasures.likelihood_ratio, n=50)
 
-    # Create doc
+    # Quote
+    quotes = [sent for sent in nltk.sent_tokenize(body) if sent.find(word) >= 0]
+
+    # Save to DB
     doc_id = db.create_doc(conn, id, len(text), '' if date is None else date.text)
     for word1, word2 in colloc:
-        #if word1 in IGNORE or word2 in IGNORE or len(word1) < 3 or len(word2) < 3:
-        #    continue
         db.create_coword(conn, doc_id, word1, word2)
+    print ' -> ' + str(len(colloc)) + ' cowords'
 
-    # Quote
-    # Date d'édition
+    for quote in quotes:
+        db.create_quote(conn, doc_id, word, quote)
+    print ' -> ' + str(len(quotes)) + ' quotes'
 
-    print ' -> ' + str(doc_id)
+    print ' -> doc_id = ' + str(doc_id)
 
 
 
-def get_ocr(doc_list):
+def get_ocr(doc_list, word):
     '''
     Récupère et indexe les OCR issus d'une requête
     :param doc_list: Un doc XML de résultat
@@ -115,6 +118,7 @@ def get_ocr(doc_list):
     for node in nodes:
         ark = node.find('srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
         if ark is None or not is_valid_ark(ark.text):
+            print ' -> Bad ID'
             continue
 
         date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
@@ -126,9 +130,12 @@ def get_ocr(doc_list):
         gallica.request('GET', url)
         resp = gallica.getresponse()
         if resp.status == 200:
-            process_body(id, resp.read(), date)
+            process_body(id, resp.read(), date, word)
+        else:
+            print ' -> Bad status'
 
 
-get_ocr(get_list_docs('seduction diable'))
+word = 'diable'
+get_ocr(get_list_docs(word), word)
 
 print 'Done'
