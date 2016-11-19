@@ -57,7 +57,7 @@ def is_valid_ark(ark):
     return ark.startswith('http://' + HOST)
 
 
-def process_body(id, body):
+def process_body(id, body, date):
     '''
     Traite le corps d'un document
     :param body:
@@ -88,19 +88,17 @@ def process_body(id, body):
     colloc = finder.nbest(nltk.collocations.BigramAssocMeasures.likelihood_ratio, n=50)
 
     # Create doc
-    doc_id = db.create_doc(conn, id, len(text))
+    doc_id = db.create_doc(conn, id, len(text), '' if date is None else date.text)
     for word1, word2 in colloc:
         #if word1 in IGNORE or word2 in IGNORE or len(word1) < 3 or len(word2) < 3:
         #    continue
         db.create_coword(conn, doc_id, word1, word2)
 
+    # Quote
+    # Date d'édition
+
     print ' -> ' + str(doc_id)
 
-    # Longueur
-
-
-    #with open(filename, 'w') as f:
-    #    f.write(body)
 
 
 def get_ocr(doc_list):
@@ -111,20 +109,24 @@ def get_ocr(doc_list):
     '''
     tree = xtree.ElementTree()
     root = tree.parse(cStringIO.StringIO(doc_list))
-    nodes = root.findall('srw:records/srw:record/srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
+    nodes = root.findall('srw:records/srw:record', NAMESPACES)
     url = ''
     filenames = []
     for node in nodes:
-        if not is_valid_ark(node.text):
+        ark = node.find('srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
+        if ark is None or not is_valid_ark(ark.text):
             continue
-        print 'Get OCR for ' + node.text
-        id = ark_to_url(node.text)
+
+        date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
+
+        print 'Get OCR for ' + ark.text
+        id = ark_to_url(ark.text)
         url = id + '/.texteBrut'
         gallica = httplib.HTTPConnection(HOST)
         gallica.request('GET', url)
         resp = gallica.getresponse()
         if resp.status == 200:
-            process_body(id, resp.read())
+            process_body(id, resp.read(), date)
 
 
 get_ocr(get_list_docs('seduction diable'))
