@@ -13,6 +13,7 @@ import text_db as db
 import nltk
 from nltk.collocations import *
 from bs4 import BeautifulSoup
+import codecs
 
 HOST = 'gallica.bnf.fr'
 
@@ -21,6 +22,7 @@ xtree.register_namespace('dc', 'http://purl.org/dc/elements/1.1/')
 NAMESPACES = {'dc': 'http://purl.org/dc/elements/1.1/', 'oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/', 'srw': 'http://www.loc.gov/zing/srw/'}
 HEADERS = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36', 'Referer': 'http://gallica.bnf.fr/ark:/12148/bpt6k5834013m/f1n271.texteBrut'}
 
+UTF8 = codecs.lookup('utf-8')
 
 IGNORE = nltk.corpus.stopwords.words('french') + ['les', 'qu', 'tout']
 
@@ -37,7 +39,7 @@ def get_list_docs(words, limit=3):
     '''
     print 'Get docs for ' + words
     query = '(gallica all "' + words + '")'
-    url = '/SRU?operation=searchRetrieve&version=1.2&startRecord=0&maximumRecords=' + str(limit) + '&page=1&collapsing=true&exactSearch=false&query=' + urllib.quote(query) + '&filter=ocr.quality%20all%20%22texte%20disponible%22'
+    url = '/SRU?operation=searchRetrieve&version=1.2&startRecord=0&maximumRecords=' + str(limit) + '&page=1&collapsing=true&exactSearch=false&query=' + urllib.quote(UTF8.encode(query)[0]) + '&filter=ocr.quality%20all%20%22texte%20disponible%22'
     gallica = httplib.HTTPConnection(HOST)
     gallica.request('GET', url)
     return gallica.getresponse().read()
@@ -88,6 +90,8 @@ def process_body(id, body, date, word):
     colloc = finder.nbest(nltk.collocations.BigramAssocMeasures.likelihood_ratio, n=50)
 
     # Quote
+    sents = nltk.sent_tokenize(body)
+    [sent.find(word) for sent in sents]
     quotes = [sent for sent in nltk.sent_tokenize(body) if sent.find(word) >= 0]
 
     # Save to DB
@@ -120,6 +124,9 @@ def get_ocr(doc_list, word):
         if ark is None or not is_valid_ark(ark.text):
             print ' -> Bad ID'
             continue
+        if db.get_doc(conn, ark.text) is not None:
+            print ' -> Already in'
+            continue
 
         date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
 
@@ -130,12 +137,11 @@ def get_ocr(doc_list, word):
         gallica.request('GET', url)
         resp = gallica.getresponse()
         if resp.status == 200:
-            process_body(id, resp.read(), date, word)
+            process_body(id, UTF8.decode(resp.read())[0], date, word)
         else:
             print ' -> Bad status'
 
-
-word = 'diable'
-get_ocr(get_list_docs(word), word)
+word = u'séduction'
+get_ocr(get_list_docs(word, limit=100), word)
 
 print 'Done'
