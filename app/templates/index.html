@@ -33,8 +33,9 @@
             {% endfor %}
 		</div>
         <script>
-            params = { padding: 0 };
-            $('.band').each(function() { $(this).jscroll(params); });
+            //params = { padding: -10 };
+            //$('.band').each(function() { $(this).jscroll(params); });
+            $('.band').jscroll({autoTriggerUntil: 50});
 
             function setCowords(item, vis) {
                 console.log(vis);

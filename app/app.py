@@ -10,6 +10,7 @@ import codecs
 
 UTF8 = codecs.lookup('utf-8')
 WORDS_PER_MIN = 600
+IMAGE_PROBABILITY = .8
 
 def read_time(nwords):
     '''
@@ -48,7 +49,7 @@ def get_quotes_for_words(conn, conn_i, words):
     quotes = []
     for word in words:
         candidates = db.get_quotes_i(conn_i, word)
-        if random.random() > 0.5 and len(candidates) > 0:
+        if random.random() < IMAGE_PROBABILITY and len(candidates) > 0:
             quotes.append(random.choice(candidates))
         else:
             quotes.append(random.choice(db.get_quotes(conn, word)))
@@ -120,7 +121,7 @@ def next_word(word):
     word2 = random.choice(db.get_cowords(conn, word))
 
     quote = None
-    if random.random() > 0.5:
+    if random.random() < IMAGE_PROBABILITY:
         choices = db.get_quotes_i(conn_i, word2)
         if len(choices) > 0:
             quote = random.choice(choices)
