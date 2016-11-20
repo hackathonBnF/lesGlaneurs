@@ -5,56 +5,6 @@ body{
     background-color: #FFFFFF;
 }
 
-.question{
-    text-align: center;
-    margin: 0 auto;
-    font-size: 4em;
-    color: #111111;
-    margin-bottom: 30px;
-    margin-top: 50px;
-}
-.question-vert{
-    text-align: center;
-    width: 400px;
-    margin: 0 auto;
-    color: #111111;
-    color: rgb(64, 192, 64);
-    margin-bottom: 15px;
-    border-bottom: 2px dotted #cccccc;
-}
-
-.menu-emotions{
-    text-align: center;
-    margin: 0 auto;
-    font-size: 1em;
-    color: #111111;
-    line-height: 2em;
-    padding-top: 20px;
-}
-
-.a-emotion{
-}
-
-.a-emotion:hover{
-    color: #ffffff;
-}
-
-.emotion{
-    width: 400px;
-    margin: 0 auto;
-    font-size: 2em;
-    color: #111111;
-    padding: 10px;
-}
-
-.emotion:hover{
-    color: white;
-    background-color: rgb(64, 192, 64);
-    padding: 15px;
-    font-size: 4em;
-    padding: 20px;
-}
-
 .header {
     top: 50px;
     left: 0;
@@ -72,11 +22,6 @@ body{
     top: 10px;
     color: white;
     background-color: rgb(64, 192, 64);
-}
-
-.border {
-    width: 100%;
-    border-bottom: 1px solid #cccccc;
 }
 
 .main {
@@ -102,15 +47,15 @@ body{
 }
 
 .citation{
-    padding: 25px;
+    padding: 15px;
 }
 
 .item {
     border: 5px solid #DDDDDD;
     font-size: 18pt;
-    padding: 0px;
     font-family: Georgia;
     font-style: italic;
+    padding: 5px;
     margin-bottom: 10px;
     background-color: #FFFFFF;
     overflow: auto;
@@ -122,6 +67,10 @@ body{
     width: 100%;
     padding: 0px;
 
+}
+
+img + div{
+    font-size: 5px;
 }
 
 .annotation {
@@ -136,9 +85,10 @@ body{
     font-size: 12pt;
     line-height: 23px;
     padding: 5px;
+    padding-left: 10px;
     padding-top: 10px;
     font-family: georgia;
-    text-align: center;
+    text-align: left;
     background-color: rgb(64, 192, 64);
     position: absolute;
     top:-5px;
