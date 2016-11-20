@@ -14,7 +14,8 @@
 			<div class="band">
                 {% for quote in band %}
                     <div class="item">
-                        <img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/> {{ quote[1] }}
+						<img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/>
+						<a href="{{ 'http://gallica.bnf.fr'~quote[0] }}">{{ quote[1] }}</a>
                     </div>
                 {% endfor %}
                 <a href="/next/{{ last_words[loop.index0]|quote }}">{{ last_words[loop.index0] }}</a>

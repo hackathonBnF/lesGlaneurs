@@ -26,7 +26,15 @@ def get_cowords_for_word(conn, word, n=4):
     return get_any_n(db.get_cowords(conn, word), n)
 
 def get_quotes_for_words(conn, conn_i, words):
-    return [random.choice(db.get_quotes(conn, word) + db.get_quotes_i(conn_i, word)) for word in words]
+    quotes = []
+    for word in words:
+        candidates = db.get_quotes_i(conn_i, word)
+        if random.random() > 0.5 and len(candidates) > 0:
+            quotes.append(random.choice(candidates))
+        else:
+            quotes.append(random.choice(db.get_quotes(conn, word)))
+    return quotes
+
 
 def get_cowords_for_words_excluding(conn, words, excluded):
     cowords = []
@@ -53,13 +61,13 @@ def momentum(word):
 
     # Deuxième ligne : co-mots et citations associées
     words2 = get_cowords_for_word(conn, word)
-    rows.append(get_quotes_for_words(conn, words2))
+    rows.append(get_quotes_for_words(conn, conn_i, words2))
 
     # Troisième & quatrième lignes : co-co-(co-)mots et citations
     words3 = get_cowords_for_words_excluding(conn, words2, [word])
-    rows.append(get_quotes_for_words(conn, words3))
+    rows.append(get_quotes_for_words(conn, conn_i, words3))
     words4 = get_cowords_for_words_excluding(conn, words3, [word] + words2)
-    rows.append(get_quotes_for_words(conn, words4))
+    rows.append(get_quotes_for_words(conn, conn_i, words4))
 
     # Transformation en bande (colonnes)
     bands = [[row[i] for row in rows] for i in xrange(4)]
@@ -72,6 +80,7 @@ def momentum(word):
 @app.route('/next/<word>')
 def next_word(word):
     conn = db.get_connection()
+    conn_i = db.get_connection_i()
 
     # Une quote et un co-word
     word2 = random.choice(db.get_cowords(conn, word))
