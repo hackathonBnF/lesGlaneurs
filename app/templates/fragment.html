@@ -1,5 +1,19 @@
+<<<<<<< HEAD
 <div class="item">
     <img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/>
     <a href="{{ 'http://gallica.bnf.fr'~quote[0] }}">{{ quote[1] }}</a>
+=======
+{# Pour bien faire faudrait factoriser ça dans index.html mais ça diffère un peu (pas de loop) #}
+<div class="cowords">
+    {{ previous_word }}<br>
+    {{ word }}
+</div>
+<div class="item" onmouseover="setCowords(this, 'visible');" onmouseout="setCowords(this, 'hidden');">
+    <img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/>
+    <a href="{{ 'http://gallica.bnf.fr'~quote[0] }}">{{ quote[1] }}</a>
+    {% if quote[5] > 0 %}
+        <div class="annotation">Temps de lecture: {{ quote[5]|read_time }}</div>
+    {% endif %}
+>>>>>>> 4e9485224666132b2a045e7bc72e6b577dc8da97
 </div>
 <a href="/next/{{ word|quote }}">{{ word }}</a>

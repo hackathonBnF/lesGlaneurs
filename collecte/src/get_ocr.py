@@ -29,7 +29,7 @@ IGNORE = nltk.corpus.stopwords.words('french') + ['les', 'qu', 'tout']
 conn = db.get_connection()
 
 
-words = [
+words_serie_1 = [
     u'séduction',
     u'courtisanes',
     u'érotique',
@@ -50,6 +50,18 @@ words = [
     u'assassinat',
     u'supplice',
     u'sacrebleu'
+]
+
+words = [
+    u'ivre',
+	u'Bacchus',
+	u'nausée',
+	u'alcool',
+	u'boire',
+	u'absinthe',
+	u'ivrogne',
+	u'gueux',
+	u'boissons'
 ]
 
 
