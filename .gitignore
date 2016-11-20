@@ -89,3 +89,5 @@ ENV/
 .ropeproject
 collecte/.idea
 app/.idea
+
+dump/dump_fichiers/momentum.css
