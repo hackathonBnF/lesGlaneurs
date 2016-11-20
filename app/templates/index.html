@@ -1,6 +1,8 @@
 <html>
 	<head>
 		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='momentum.css') }}">
+        <script src="{{ url_for('static', filename='jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='jquery.jscroll.min.js') }}"></script>
 	</head>
 	<body>
 		<div class="header">
@@ -15,8 +17,14 @@
                         <img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/> {{ quote[1] }}
                     </div>
                 {% endfor %}
+                <a href="/next/{{ last_words[loop.index0]|quote }}">{{ last_words[loop.index0] }}</a>
             </div>
             {% endfor %}
 		</div>
+        <script>
+            //params = { padding: 10 };
+            params = {};
+            $('.band').each(function() { $(this).jscroll(params); });
+        </script>
 	</body>
 </html>

@@ -11,7 +11,7 @@ def escape_quote(x):
     return re.sub("'", "''", x)
 
 def get_connection():
-    conn = sqlite3.connect('../collecte/target/text/docs_sample.db')
+    conn = sqlite3.connect('../collecte/target/text/docs.db')
     return conn
 
 def get_connection_i():
@@ -35,6 +35,6 @@ def get_quotes_i(conn_i, word):
 def get_cowords(conn, word):
     cur = conn.cursor()
     cur.execute("select word2 from coword where word1 = '%s'" % word)
-    res = cur.fetchall()
+    rows = cur.fetchall()
     cur.close()
-    return res
+    return [row[0] for row in rows]
