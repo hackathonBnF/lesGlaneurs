@@ -5,6 +5,16 @@ body{
     background-color: #FFFFFF;
 }
 
+.arrows-left{
+    position: fixed;
+    top:400px;
+}
+
+.arrows-right{
+    position: fixed;
+    top:400px;
+}
+
 .question{
     text-align: center;
     margin: 0 auto;
