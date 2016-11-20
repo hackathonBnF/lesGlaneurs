@@ -12,6 +12,26 @@ def get_any_n(seq, n):
     random.shuffle(seq)
     return seq[:n]
 
+
+def get_quotes_for_word(conn, word, n=4):
+    return get_any_n(db.get_quotes(conn, word), n)
+
+def get_cowords_for_word(conn, word, n=4):
+    return get_any_n(db.get_cowords(conn, word), n)
+
+def get_quotes_for_words(conn, words):
+    return [random.choice(db.get_quotes(conn, word)) for word in words]
+
+def get_cowords_for_words_excluding(conn, words, excluded):
+    cowords = []
+    for word in words:
+        candidates = db.get_cowords(conn, word)
+        random.shuffle(candidates)
+        candidates = [cand for cand in candidates if cand not in excluded]
+        cowords.append(candidates[0])
+    return cowords
+
+
 @app.route('/')
 def index():
     return 'Hello'
@@ -20,28 +40,24 @@ def index():
 def momentum(word):
     conn = db.get_connection()
 
-    # Première bande : citations du mot choisi
-    band1 = get_any_n(db.get_quotes(conn, word), 4)
-    print 'BAND 1 - %d quotes' % len(band1)
+    rows = []
+    # Première ligne : citations du mot choisi
+    rows.append(get_quotes_for_word(conn, word))
 
-    # Deuxième bande : citations de co-mots de celui choisi
-    words2 = get_any_n(db.get_cowords(conn, word), 4)
-    print 'BAND 2 - %d words' % len(words2)
-    band2 = [random.choice(db.get_quotes(conn, word2)) for word2 in words2]
-    print 'BAND 2 - %d quotes' % len(band2)
+    # Deuxième ligne : co-mots et citations associées
+    words2 = get_cowords_for_word(conn, word)
+    rows.append(get_quotes_for_words(conn, words2))
 
-    # Troisième bande : citations de co-mots des co-mots
-    words3 = []
-    for word2 in words2:
-        candidates = db.get_cowords(conn, word2)
-        random.shuffle(candidates)
-        candidates = [cand for cand in candidates if cand != word]
-        words3.append(candidates[0])
-    print 'BAND 3 - %d words' % len(words3)
-    band3 = [random.choice(db.get_quotes(conn, word3)) for word3 in words3]
-    print 'BAND 3 - %d quotes' % len(band3)
+    # Troisième & quatrième lignes : co-co-(co-)mots et citations
+    words3 = get_cowords_for_words_excluding(conn, words2, [word])
+    rows.append(get_quotes_for_words(conn, words3))
+    words4 = get_cowords_for_words_excluding(conn, words3, [word] + words2)
+    rows.append(get_quotes_for_words(conn, words4))
 
-    return render_template('index.html', word=word, band1=band1, band2=band2, band3=band3)
+    # Transformation en bande (colonnes)
+    bands = [[row[i] for row in rows] for i in xrange(4)]
+
+    return render_template('index.html', word=word, bands=bands)
 
 if __name__ == '__main__':
     app.run()
