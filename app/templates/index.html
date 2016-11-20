@@ -20,7 +20,7 @@
                             {{ word_pairs[outer_loop.index0][loop.index0 - 1][1] }}
                         </div>
                     {% endif %}
-                    <div class="item">
+                    <div class="item" onmouseover="setCowords(this, 'visible');" onmouseout="setCowords(this, 'hidden');">
 						<img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/>
 						<a href="{{ 'http://gallica.bnf.fr' ~ quote[0] }}">{{ quote[1] }}</a>
                         {% if quote[5] > 0 %}
@@ -35,6 +35,10 @@
         <script>
             params = { padding: 0 };
             $('.band').each(function() { $(this).jscroll(params); });
+
+            function setCowords(item, vis) {
+                item.previousElementSibling.style.visibility = vis;
+            }
         </script>
 	</body>
 </html>
