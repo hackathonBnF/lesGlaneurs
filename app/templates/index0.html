@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='momentum.css') }}">
+    <meta charset="UTF-8">
+    <title>Momentum !</title>
+</head>
+<body>
+		<div class="header">
+			<span class="title">Momentum !</span>
+		</div>
+
+<table class="hoverTable">
+    <tr>
+		<td><img src="{{ url_for('static', filename='up.gif') }}"/></td>
+	</tr>
+    {% for word in words[0:6] %}
+	<tr>
+		<td><a href="{{ 'momentum/'~word }}">{{ word }}</a></td>
+	</tr>
+    {% endfor %}
+    <tr>
+		<td><img src="{{ url_for('static', filename='down.gif') }}"/></td>
+	</tr>
+</table>
+
+</body>
+</html>
