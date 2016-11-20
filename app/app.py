@@ -2,10 +2,16 @@
 
 
 from flask import Flask, render_template
+
 import random
 import text_db as db
+import urllib
+import codecs
+
+UTF8 = codecs.lookup('utf-8')
 
 app = Flask(__name__)
+app.jinja_env.filters['quote'] = lambda x: urllib.quote(UTF8.encode(x)[0])
 app.debug = True
 
 def get_any_n(seq, n):
@@ -57,7 +63,23 @@ def momentum(word):
     # Transformation en bande (colonnes)
     bands = [[row[i] for row in rows] for i in xrange(4)]
 
-    return render_template('index.html', word=word, bands=bands)
+    conn.close()
+
+    return render_template('index.html', word=word, bands=bands, last_words=words4)
+
+
+@app.route('/next/<word>')
+def next_word(word):
+    conn = db.get_connection()
+
+    # Une quote et un co-word
+    word2 = random.choice(db.get_cowords(conn, word))
+    quote = random.choice(db.get_quotes(conn, word2))
+
+    conn.close()
+
+    return render_template('fragment.html', quote=quote, word=word2)
+
 
 if __name__ == '__main__':
     app.run()
