@@ -9,25 +9,27 @@ import httplib
 import re
 import urllib
 import xml.etree.ElementTree as xtree
-import dico
+from dico import KEYWORD
+import image_db as db
+from PIL import Image, ImageOps
+import colorthief
+from colormath.color_objects import sRGBColor, LabColor
+from colormath.color_conversions import convert_color
+from colormath.color_diff import delta_e_cie2000
 
-QUERY = '('
+conn = db.get_connection()
+
 HOST = 'gallica.bnf.fr'
 
-for mots in KEYWORD:
-    for mot in mots:
-        print mot
-
-
 xtree.register_namespace('dc', 'http://purl.org/dc/elements/1.1/')
-namespaces = {'dc': 'http://purl.org/dc/elements/1.1/', 'oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/', 'srw': 'http://www.loc.gov/zing/srw/'}
+NAMESPACES = {'dc': 'http://purl.org/dc/elements/1.1/', 'oai_dc': 'http://www.openarchives.org/OAI/2.0/oai_dc/', 'srw': 'http://www.loc.gov/zing/srw/'}
 
 # TODO : pagination
 
 # Récupération de la liste
-def get_list_docs(query, page):
+def get_list_docs(mot, page):
     url = '/SRU?operation=searchRetrieve&version=1.2&startRecord=' + str((page-1)*50+1) + '&maximumRecords=50&page=' + str(page) + '&collapsing=true&exactSearch=false&query='\
-          + urllib.quote(QUERY + 'and (dc.type all "image") and (provenance adj "bnf.fr")')
+          + urllib.quote('(gallica adj "' + mot + '") and (dc.type all "image") and (provenance adj "bnf.fr")')
     print url
     gallica = httplib.HTTPConnection(HOST)
     gallica.request('GET', url)
@@ -37,13 +39,14 @@ def get_list_docs(query, page):
 # {scheme}://{server}{/prefix}/{identifier}/{region}/{size}/{rotation}/{quality}.{format}
 
 # Récupération du texte d'un doc
-def get_img(page):
-    doc = get_list_docs(QUERY, page)
+def get_img(mot, page):
+    doc = get_list_docs(mot, page)
+
     tree = xtree.ElementTree()
     root = tree.parse(cStringIO.StringIO(doc))
-    nodes = root.findall('srw:records/srw:record/srw:recordData/oai_dc:dc/dc:identifier', namespaces)
-    numberOfRecords = root.findall('srw:numberOfRecords', namespaces)[0].text
-    nextRecordPosition = root.findall('srw:nextRecordPosition', namespaces)[0].text
+    nodes = root.findall('srw:records/srw:record/srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
+    numberOfRecords = root.findall('srw:numberOfRecords', NAMESPACES)[0].text
+    nextRecordPosition = root.findall('srw:nextRecordPosition', NAMESPACES)[0].text
     print numberOfRecords, nextRecordPosition
 
     url = ''
@@ -53,22 +56,36 @@ def get_img(page):
             #url = '/iiif' + id + '/f1/full/full/0/native.jpg'
             url = id + '.thumbnail'
             #url = id + '.highres'
-            #print url
-            #gallica = httplib.HTTPConnection(HOST)
-            #gallica.request('GET', url)
-            filename = '../target/image/' + re.sub('/|:', '_', id) + '.jpeg'
+
+            filename = '../target/image/thumb/' + re.sub('/|:', '_', id) + '.jpeg'
             print filename
-            #print "==========="
+
             urllib.urlretrieve("http://gallica.bnf.fr" + url, filename)
-            #with open(filename, 'wb') as f:
-            #    f.write(gallica.getresponse().read())
+
             #ct = ColorThief(filename)
             #for color in ct.get_palette(color_count=10):
             #    cc = get_closest_color(color)
             #    if cc not in ['Black','White','Gray','Maroon','Silver','Olive']:
             #        print cc
-    if int(nextRecordPosition) < int(numberOfRecords) + 50:
-        get_img(page+1)
+
+            # insert image to DB
+            with Image.open(filename) as im:
+                width, height = im.size
+                date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
+                doc_id = db.create_image(conn, id, width, height, date)
+                db.create_keyword(conn, doc_id, mot)
+                ct = colorthief.ColorThief(filename)
+                for color in ct.get_palette(color_count=6, quality=1):
+                    cc = get_closest_color(color)
+                    if cc not in ['Black', 'White', 'Gray', 'Silver']:
+                        db.create_color(conn, doc_id, cc)
+                # sample image to 5 colors
+                #result = ImageOps.posterize(im, 1)
+                #result = im.convert(mode='P', colors=8)
+                #result.convert("RGB").save(filename + '.jpeg')
+
+    if numberOfRecords>0 and int(nextRecordPosition)<int(numberOfRecords)+50:
+        get_img(mot, page+1)
 
 def get_closest_color(mycolor):
     mapping_color = {
@@ -91,10 +108,14 @@ def get_closest_color(mycolor):
     }
     min_dist = 200000
     for color, rgbc in mapping_color.items():
-        dist = sum((mycolor[i] - rgbc[i]) ** 2 for i in range(3))
+        mycolor_lab = convert_color(sRGBColor(mycolor[0], mycolor[1], mycolor[2]), LabColor)
+        rgbc_lab = convert_color(sRGBColor(rgbc[0], rgbc[1], rgbc[2]), LabColor)
+        dist = delta_e_cie2000(mycolor_lab, rgbc_lab)
         if dist < min_dist:
             min_dist = dist
             best_color = color
     return best_color
 
-get_img(1)
+for mots in KEYWORD.keys():
+    for mot in KEYWORD[mots]:
+        get_img(mot, 1)
