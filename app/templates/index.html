@@ -16,6 +16,9 @@
                     <div class="item">
 						<img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/>
 						<a href="{{ 'http://gallica.bnf.fr'~quote[0] }}">{{ quote[1] }}</a>
+                        {% if quote[5] > 0 %}
+                            <div class="annotation">Temps de lecture: {{ quote[5]|read_time }}</div>
+                        {% endif %}
                     </div>
                 {% endfor %}
                 <a href="/next/{{ last_words[loop.index0]|quote }}">{{ last_words[loop.index0] }}</a>

@@ -20,14 +20,14 @@ def get_connection_i():
 
 def get_quotes(conn, word):
     cur = conn.cursor()
-    cur.execute("select id_ark, quote, '' as url, 0 as width, 0 as height from quote join doc on quote.doc_id=doc.id where word = '%s'" % word)
+    cur.execute("select id_ark, quote, '' as url, 0 as width, 0 as height, words from quote join doc on quote.doc_id=doc.id where word = '%s'" % word)
     res = cur.fetchall()
     cur.close()
     return res
 
 def get_quotes_i(conn_i, word):
     cur = conn_i.cursor()
-    cur.execute("select id_ark, quote, url, width, height from keyword join quote on keyword.image_id=quote.image_id join image on image.id=quote.image_id where word = '%s'" % word)
+    cur.execute("select id_ark, quote, url, width, height, 0 as words from keyword join quote on keyword.image_id=quote.image_id join image on image.id=quote.image_id where word = '%s'" % word)
     res = cur.fetchall()
     cur.close()
     return res

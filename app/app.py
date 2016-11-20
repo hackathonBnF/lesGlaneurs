@@ -9,9 +9,28 @@ import urllib
 import codecs
 
 UTF8 = codecs.lookup('utf-8')
+WORDS_PER_MIN = 600
+
+def read_time(nwords):
+    '''
+    Conversion d'un nombre de mots en temps de lecture
+    :param t:
+    :return:
+    '''
+    nwords = int(nwords)
+    minutes = int(nwords / WORDS_PER_MIN)
+    hours = int(minutes / 60)
+    time = ''
+    if hours > 0:
+        minutes %= 60
+        time = '%dh' % hours
+    time += ' %dmin' % minutes
+    return time
+
 
 app = Flask(__name__)
 app.jinja_env.filters['quote'] = lambda x: urllib.quote(UTF8.encode(x)[0])
+app.jinja_env.filters['read_time'] = read_time
 app.debug = True
 
 def get_any_n(seq, n):

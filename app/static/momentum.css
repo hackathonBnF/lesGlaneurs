@@ -30,6 +30,13 @@
     background-color: rgb(230, 255, 255);
 }
 
+.item .annotation {
+    font-size: 10pt;
+    text-align: right;
+    font-family: arial;
+    font-style: normal;
+}
+
 .scroller {
     display: block;
     width: 100%;
