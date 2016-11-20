@@ -15,7 +15,7 @@
             {% set outer_loop = loop %}
 			<div class="band">
                 {% for quote in band %}
-                    {% set first_item = loop.index0 == 0 %}
+                    {% set first_item = loop.first %}
                     {% set previous_word = word_pairs[outer_loop.index0][loop.index0 - 1][0] %}
                     {% set word = word_pairs[outer_loop.index0][loop.index0 - 1][1] %}
                     {% set last_word = loop.last %}

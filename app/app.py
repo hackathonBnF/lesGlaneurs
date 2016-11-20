@@ -168,7 +168,6 @@ def momentum(word):
     cowords.append(zip(words3, words4))
     rows.append(get_quotes_for_words(conn, conn_i, words4))
 
-    print rows
     # Transformation en bandes (colonnes)
     bands = [[row[i] for row in rows] for i in xrange(4)]
     word_pairs = [[pair[i] for pair in cowords] for i in xrange(4)]
