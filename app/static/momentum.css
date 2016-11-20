@@ -6,10 +6,22 @@ body{
 }
 
 .header {
-    top: 0;
+    top: 50px;
     left: 0;
     height: 70px;
     width: 100%;
+}
+
+.title {
+    position: absolute;
+    font-size: 32pt;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 46px;
+    top: 10px;
+    color: white;
+    background-color: rgb(64, 192, 64);
 }
 
 .main {
@@ -29,6 +41,13 @@ body{
 }
 
 .legende{
+    visibility: hidden;
+    position: absolute;
+    font-size: 1px;
+}
+
+.citation{
+    padding: 15px;
 }
 
 .item {
@@ -64,7 +83,10 @@ img + div{
 
 .cowords {
     font-size: 12pt;
+    line-height: 23px;
     padding: 5px;
+    padding-left: 10px;
+    padding-top: 10px;
     font-family: georgia;
     text-align: left;
     background-color: rgb(64, 192, 64);
@@ -79,13 +101,6 @@ img + div{
 .scroller {
     display: block;
     width: 100%;
-}
-
-.title {
-    font-size: 32pt;
-    padding: 4px;
-    color: white;
-    background-color: rgb(64, 192, 64);
 }
 
 a {
