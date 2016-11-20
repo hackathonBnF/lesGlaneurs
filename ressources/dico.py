@@ -2,44 +2,45 @@
 
 KEYWORD = {}
 
-KEYWORD['AMOUR'] = ['séduction',
-    'courtisane',
-    'érotique',
-    'coquine',
-    'coquin',
-    'baiser',
-    'bacchanale',
-    'fouet',
-    'prostituée',
-    'cocotte',
-    'coeur brisé',
-    'noce'
-    ]
-
-KEYWORD['COLERE'] = ['cannibales','colérique',
-    'vilain',
-    'guillotine',
-    'torture',
-    'assassinat ',
-    'meurtre',
-    'supplice',
-    'sacrebleu',
-    'execution '
-    ]
-
-KEYWORD['BOURRE'] = ['ivre',
-     'bacchus',
-     'nausée',
-     'trinquer',
-     'alcool',
-     'boire',
-     'absinthe',
-     'ivrogne',
-     'gueux',
-     'boissons'
-     ]
-
 if False:
+    KEYWORD['AMOUR'] = ['séduction',
+        'courtisane',
+        'érotique',
+        'coquine',
+        'coquin',
+        'baiser',
+        'bacchanale',
+        'fouet',
+        'prostituée',
+        'cocotte',
+        'coeur brisé',
+        'noce'
+        ]
+
+    KEYWORD['COLERE'] = ['cannibales','colérique',
+        'vilain',
+        'guillotine',
+        'torture',
+        'assassinat ',
+        'meurtre',
+        'supplice',
+        'sacrebleu',
+        'execution '
+        ]
+
+    KEYWORD['BOURRE'] = ['ivre',
+         'bacchus',
+         'nausée',
+         'trinquer',
+         'alcool',
+         'boire',
+         'absinthe',
+         'ivrogne',
+         'gueux',
+         'boissons'
+         ]
+
+if True:
     KEYWORD['AFFAME'] = ['gourmandise',
         'cocagne',
         'ripaille',

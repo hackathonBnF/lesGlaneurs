@@ -11,6 +11,13 @@
 		<hr>
 		<div class="main">
 
+            <div class="arrows-left">
+                <img src="{{ url_for('static', filename='arrow-left.png') }}" width="5%"/>
+            </div>
+            <div class="arrows-right">
+                <img src="{{ url_for('static', filename='arrow-right.png') }}" width="5%"/>
+            </div>
+
             {% for band in bands %}
             {% set outer_loop = loop %}
 			<div class="band">

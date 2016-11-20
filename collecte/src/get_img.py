@@ -29,10 +29,10 @@ NAMESPACES = {'dc': 'http://purl.org/dc/elements/1.1/', 'oai_dc': 'http://www.op
 # TODO : pagination
 
 # Récupération de la liste
-def get_list_docs(mot, page):
-    url = '/SRU?operation=searchRetrieve&version=1.2&startRecord=' + str((page-1)*50+1) + '&maximumRecords=50&page=' + str(page) + '&collapsing=true&exactSearch=false&query='\
+def get_list_docs(mot, start):
+    url = '/SRU?operation=searchRetrieve&version=1.2&startRecord=' + str(start) + '&maximumRecords=50&collapsing=true&exactSearch=false&query='\
           + urllib.quote('(gallica adj "' + mot + '") and (dc.type all "image") and (provenance adj "bnf.fr")')
-    print url
+    print mot, start
     gallica = httplib.HTTPConnection(HOST)
     gallica.request('GET', url)
     return gallica.getresponse().read()
@@ -41,56 +41,60 @@ def get_list_docs(mot, page):
 # {scheme}://{server}{/prefix}/{identifier}/{region}/{size}/{rotation}/{quality}.{format}
 
 # Récupération du texte d'un doc
-def get_img(mot, page):
-    doc = get_list_docs(mot, page)
-    tree = xtree.ElementTree()
-    root = tree.parse(cStringIO.StringIO(doc))
-    nodes = root.findall('srw:records/srw:record', NAMESPACES)
-    numberOfRecords = root.findall('srw:numberOfRecords', NAMESPACES)[0].text
-    nextRecordPosition = root.findall('srw:nextRecordPosition', NAMESPACES)[0].text
-    print numberOfRecords, nextRecordPosition
+def get_img(mot, start):
+    try:
+        doc = get_list_docs(mot, start)
+        tree = xtree.ElementTree()
+        root = tree.parse(cStringIO.StringIO(doc))
+        nodes = root.findall('srw:records/srw:record', NAMESPACES)
+        numberOfRecords = root.findall('srw:numberOfRecords', NAMESPACES)[0].text
+        nextRecordPosition = root.findall('srw:nextRecordPosition', NAMESPACES)[0].text
+        print int(nextRecordPosition) , len(nodes) , int(numberOfRecords)
 
-    url = ''
-    if numberOfRecords > 0:
-        for node in nodes:
-            ark = node.find('srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
-            if ark is None or not is_valid_ark(ark.text):
-                print ' -> Bad ID'
-                continue
-            ark_id = ark_to_url(ark.text)
-            if db.get_image(conn, ark_id) is not None:
-                print ' -> Already in'
-            #    continue
-            date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
-            datetext = re.sub('\.\.', '50', date.text).split('-')[0] if date is not None else None
-            quote = node.find('srw:recordData/oai_dc:dc/dc:title', NAMESPACES)
-            quotetext = quote.text.split(':')[0] if quote is not None else None
+        url = ''
+        if int(numberOfRecords)>0 and int(nextRecordPosition)+len(nodes)<int(numberOfRecords):
+            for node in nodes:
+                ark = node.find('srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
+                if ark is None or not is_valid_ark(ark.text):
+                    print ' -> Bad ID'
+                    continue
+                ark_id = ark_to_url(ark.text)
+                if db.get_image(conn, ark_id) is not None:
+                    print ' -> Already in'
+                #    continue
+                date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
+                datetext = re.sub('\.\.', '50', date.text).split('-')[0] if date is not None else None
+                quote = node.find('srw:recordData/oai_dc:dc/dc:title', NAMESPACES)
+                quotetext = quote.text.split(':')[0] if quote is not None else None
 
-            #url = '/iiif' + ark.text + '/f1/full/full/0/native.jpg'
-            url = ark.text + '.thumbnail'
-            #url = ark.text + '.highres'
+                #url = '/iiif' + ark.text + '/f1/full/full/0/native.jpg'
+                url = ark.text + '.thumbnail'
+                #url = ark.text + '.highres'
 
-            filename = '../target/image/thumb/' + re.sub('/|:', '_', ark_id) + '.jpeg'
+                filename = '../target/image/thumb/' + re.sub('/|:', '_', ark_id) + '.jpeg'
 
-            urllib.urlretrieve(url, filename)
+                urllib.urlretrieve(url, filename)
 
-            # insert image to DB
-            with Image.open(filename) as im:
-                width, height = im.size
-                image_id = db.create_image(conn, ark_id, width, height, datetext)
-                db.create_quote(conn, image_id, url, quotetext)
-                db.create_keyword(conn, image_id, mot)
-                ct = colorthief.ColorThief(filename)
-                for color in ct.get_palette(color_count=6, quality=1):
-                    cc = get_closest_color(color)
-                    if cc not in ['Black', 'White', 'Gray', 'Silver']:
-                        db.create_color(conn, image_id, cc)
-                # sample image to 5 colors
-                #result = ImageOps.posterize(im, 1)
-                #result = im.convert(mode='P', colors=8)
-                #result.convert("RGB").save(filename + '.jpeg')
-                if int(nextRecordPosition)<int(numberOfRecords)+50:
-                    get_img(mot, page+1)
+                # insert image to DB
+                with Image.open(filename) as im:
+                    width, height = im.size
+                    image_id = db.create_image(conn, ark_id, width, height, datetext)
+                    db.create_quote(conn, image_id, url, quotetext)
+                    db.create_keyword(conn, image_id, mot)
+                    ct = colorthief.ColorThief(filename)
+                    for color in ct.get_palette(color_count=6, quality=1):
+                        cc = get_closest_color(color)
+                        if cc not in ['Black', 'White', 'Gray', 'Silver']:
+                            db.create_color(conn, image_id, cc)
+                    # sample image to 5 colors
+                    #result = ImageOps.posterize(im, 1)
+                    #result = im.convert(mode='P', colors=8)
+                    #result.convert("RGB").save(filename + '.jpeg')
+            get_img(mot, nextRecordPosition)
+        else:
+            print "End"
+    except:
+        print "Gallica error"
 
 def get_closest_color(mycolor):
     mapping_color = {
@@ -134,6 +138,6 @@ def is_valid_ark(ark):
     return ark.startswith('http://' + HOST)
 
 for mots in KEYWORD.keys():
+    get_img(mots.lower(), 1)
     for mot in KEYWORD[mots]:
-        print mot
         get_img(mot, 1)

@@ -46,3 +46,8 @@ def create_quote(conn, image_id, url, quote):
     conn.execute("insert into quote (image_id, url, quote) values (%d, '%s', '%s')" % (image_id, url, quote))
     conn.commit()
 
+conn = get_connection()
+cur = conn.cursor()
+cur.execute("select word, count(*), count(distinct image_id) from keyword group by word")
+id = cur.fetchall()
+print(id)

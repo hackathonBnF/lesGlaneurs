@@ -6,22 +6,26 @@
     <title>Momentum !</title>
 </head>
 <body>
+
 		<div class="header">
 			<span class="title">Momentum !</span>
 		</div>
+		<div class="border"></div>
 
-<table class="hoverTable">
-    <tr>
-		<td><img src="{{ url_for('static', filename='up.gif') }}"/></td>
-	</tr>
+		<div class="question">
+			<p class="question-vert">Sacreubleu !</p>
+			Aujourd'hui est un jour de
+		</div>
+
+
+		<div class="menu-emotions">
+
     {% for word in words[0:6] %}
-	<tr>
-		<td><a href="{{ 'momentum/'~word }}">{{ word }}</a></td>
-	</tr>
+		<div class="emotion">
+			<a class="a-emotion" href="{{ 'momentum/'~word }}">{{ word }}</a>
+		</div>
     {% endfor %}
-    <tr>
-		<td><img src="{{ url_for('static', filename='down.gif') }}"/></td>
-	</tr>
+
 </table>
 
 </body>
