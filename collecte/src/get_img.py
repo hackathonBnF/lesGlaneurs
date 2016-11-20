@@ -60,8 +60,7 @@ def get_img(mot, page):
             ark_id = ark_to_url(ark.text)
             if db.get_image(conn, ark_id) is not None:
                 print ' -> Already in'
-                continue
-
+            #    continue
             date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
             datetext = re.sub('\.\.', '50', date.text).split('-')[0] if date is not None else None
             quote = node.find('srw:recordData/oai_dc:dc/dc:title', NAMESPACES)
@@ -75,13 +74,12 @@ def get_img(mot, page):
 
             urllib.urlretrieve(url, filename)
 
-
             # insert image to DB
             with Image.open(filename) as im:
                 width, height = im.size
                 image_id = db.create_image(conn, ark_id, width, height, datetext)
-                db.create_keyword(conn, image_id, mot)
                 db.create_quote(conn, image_id, url, quotetext)
+                db.create_keyword(conn, image_id, mot)
                 ct = colorthief.ColorThief(filename)
                 for color in ct.get_palette(color_count=6, quality=1):
                     cc = get_closest_color(color)
@@ -91,8 +89,8 @@ def get_img(mot, page):
                 #result = ImageOps.posterize(im, 1)
                 #result = im.convert(mode='P', colors=8)
                 #result.convert("RGB").save(filename + '.jpeg')
-        if int(nextRecordPosition)<int(numberOfRecords)+50:
-            get_img(mot, page+1)
+                if int(nextRecordPosition)<int(numberOfRecords)+50:
+                    get_img(mot, page+1)
 
 def get_closest_color(mycolor):
     mapping_color = {
