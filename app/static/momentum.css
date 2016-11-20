@@ -8,11 +8,14 @@ body{
 .arrows-left{
     position: fixed;
     top:400px;
+    z-index: 99;
 }
 
 .arrows-right{
     position: fixed;
     top:400px;
+    right:20px;
+    z-index: 99;
 }
 
 .question{
