@@ -21,14 +21,14 @@ def create_doc(conn, ark, words, crdate):
     if get_doc(conn, ark) is None:
         conn.execute("insert into doc (id_ark, words, crdate) values ('%s', %d, '%s')" % (ark, words, crdate))
         conn.commit()
-    return get_doc(conn, ark)
+    return get_doc(conn, ark)[0]
 
 def get_doc(conn, ark):
     cur = conn.cursor()
     cur.execute("select id from doc where id_ark = '%s'" % ark)
     id = cur.fetchone()
     cur.close()
-    return None if id is None else id[0]
+    return id
 
 def create_coword(conn, doc_id, word1, word2):
     word1 = re.sub("'", "''", word1)
