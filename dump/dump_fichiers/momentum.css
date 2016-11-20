@@ -14,14 +14,16 @@ body{
 
 .main {
     margin: 0 auto;
+    position: relative;
     width: 100%;
+    padding-left: 40px;
 }
 
 .band {
     display: inline-block;
     width: 23%;
     vertical-align: top;
-    margin: 5px;
+    margin: 4px;
     overflow-y: scroll;
     position: relative;
 }
@@ -35,7 +37,7 @@ body{
     font-family: Georgia;
     font-style: italic;
     padding: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     background-color: #FFFFFF;
     overflow: auto;
     position: relative;
@@ -48,9 +50,11 @@ body{
 
 }
 
-img
+img + div{
+    font-size: 5px;
+}
 
-.item .annotation {
+.annotation {
     font-size: 8pt;
     color: #333333;
     text-align: right;
