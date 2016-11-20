@@ -33,11 +33,12 @@ def get_image(conn, ark):
     return None if id is None else id[0]
 
 def create_color(conn, image_id, color):
-    conn.execute("insert OR IGNORE into color (image_id, color) values (%d, '%s')" % (image_id, color))
+    conn.execute("insert into color (image_id, color) values (%d, '%s')" % (image_id, color))
     conn.commit()
 
 def create_keyword(conn, image_id, word):
-    conn.execute("insert OR IGNORE into keyword (image_id, word) values (%d, '%s')" % (image_id, word))
+    print "insert: ", word
+    conn.execute("insert into keyword (image_id, word) values (%d, '%s')" % (image_id, word))
     conn.commit()
 
 def create_quote(conn, image_id, url, quote):

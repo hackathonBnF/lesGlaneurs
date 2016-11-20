@@ -207,6 +207,5 @@ def next_word(word):
     # Affiche le résultat
     return render_template('fragment.html', quote=quote, word=word2, previous_word=word, last_word=True)
 
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0')

@@ -52,7 +52,7 @@ def get_img(mot, start):
         print int(nextRecordPosition) , len(nodes) , int(numberOfRecords)
 
         url = ''
-        if int(numberOfRecords)>0 and int(nextRecordPosition)+len(nodes)<int(numberOfRecords):
+        if int(numberOfRecords)>0 and int(nextRecordPosition)+len(nodes)<=int(numberOfRecords)+1:
             for node in nodes:
                 ark = node.find('srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
                 if ark is None or not is_valid_ark(ark.text):
@@ -138,6 +138,5 @@ def is_valid_ark(ark):
     return ark.startswith('http://' + HOST)
 
 for mots in KEYWORD.keys():
-    get_img(mots.lower(), 1)
     for mot in KEYWORD[mots]:
         get_img(mot, 1)

@@ -2,8 +2,8 @@
 
 KEYWORD = {}
 
-if False:
-    KEYWORD['AMOUR'] = ['séduction',
+if True:
+    KEYWORD['AMOUR'] = ['séduction','amour',
         'courtisane',
         'érotique',
         'coquine',
@@ -17,7 +17,7 @@ if False:
         'noce'
         ]
 
-    KEYWORD['COLERE'] = ['cannibales','colérique',
+    KEYWORD['COLERE'] = ['cannibales','colérique','colere',
         'vilain',
         'guillotine',
         'torture',
@@ -28,7 +28,7 @@ if False:
         'execution '
         ]
 
-    KEYWORD['BOURRE'] = ['ivre',
+    KEYWORD['BOURRE'] = ['ivre','bourré',
          'bacchus',
          'nausée',
          'trinquer',
@@ -41,7 +41,7 @@ if False:
          ]
 
 if True:
-    KEYWORD['AFFAME'] = ['gourmandise',
+    KEYWORD['AFFAME'] = ['gourmandise','affamé',
         'cocagne',
         'ripaille',
         'glouton',
@@ -49,7 +49,7 @@ if True:
         'festin'
         ]
 
-    KEYWORD['TRISTESSE'] = ['commémoration',
+    KEYWORD['TRISTESSE'] = ['commémoration','tristesse',
         'anniversaire',
         'mort',
         'pleureuses',
@@ -59,12 +59,12 @@ if True:
         'macabre'
         ]
 
-    KEYWORD['FATIGUE'] = ['paresse',
+    KEYWORD['FATIGUE'] = ['paresse','fatigue',
         'sommeil',
         'endormi'
         ]
 
-    KEYWORD['MALADE'] = ['vérole',
+    KEYWORD['MALADE'] = ['vérole','malade',
         'lèpre',
         'vomir',
         'choléra',
@@ -72,7 +72,7 @@ if True:
         'peste'
     ]
 
-    KEYWORD['VOYAGEUR'] = ['baluchon',
+    KEYWORD['VOYAGEUR'] = ['baluchon','voyageur',
         'exotiques',
         'paysages',
         'traversée',
@@ -96,7 +96,7 @@ if True:
         'chimère'
         ]
 
-    KEYWORD['BISOUNOURS'] = ['souris',
+    KEYWORD['BISOUNOURS'] = ['souris','bisounours',
         'vache',
         'tortue',
         'chat',
@@ -106,7 +106,7 @@ if True:
         ]
 
 
-    KEYWORD['JOIE'] = ['danse',
+    KEYWORD['JOIE'] = ['danse','joie',
         'carnaval',
         'humour',
         'fête',

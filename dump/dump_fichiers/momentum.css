@@ -1,0 +1,195 @@
+/* A revoir par quelqu'un qui connaît vraiment ! */
+
+body{
+    font-family: georgia;
+    background-color: #FFFFFF;
+}
+
+.arrows-left{
+    position: fixed;
+    top:400px;
+    z-index: 99;
+}
+
+.arrows-right{
+    position: fixed;
+    top:400px;
+    right:20px;
+    z-index: 99;
+}
+
+.question{
+    text-align: center;
+    margin: 0 auto;
+    font-size: 4em;
+    color: #111111;
+    margin-bottom: 30px;
+    margin-top: 50px;
+}
+.question-vert{
+    text-align: center;
+    width: 400px;
+    margin: 0 auto;
+    color: rgb(64, 192, 64);
+    margin-bottom: 15px;
+    border-bottom: 2px dotted #cccccc;
+}
+
+.menu-emotions{
+    text-align: center;
+    margin: 0 auto;
+    font-size: 1em;
+    color: #111111;
+    line-height: 2em;
+    padding-top: 20px;
+}
+
+.a-emotion{
+}
+
+.a-emotion:hover{
+    color: #ffffff;
+}
+
+.emotion{
+    width: 400px;
+    margin: 0 auto;
+    font-size: 2em;
+    color: #111111;
+    padding: 10px;
+}
+
+.emotion:hover{
+    color: white;
+    background-color: rgb(64, 192, 64);
+    padding: 15px;
+    font-size: 4em;
+    padding: 20px;
+}
+
+.header {
+    top: 50px;
+    left: 0;
+    height: 70px;
+    width: 100%;
+}
+
+.title {
+    position: absolute;
+    font-size: 32pt;
+    padding: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    margin-left: 46px;
+    top: 10px;
+    color: white;
+    background-color: rgb(64, 192, 64);
+}
+
+.border {
+    width: 100%;
+    border-bottom: 1px solid #cccccc;
+}
+
+.main {
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+    padding-left: 40px;
+}
+
+.band {
+    display: inline-block;
+    width: 23%;
+    vertical-align: top;
+    margin: 4px;
+    overflow-y: scroll;
+    position: relative;
+}
+
+.legende{
+    visibility: hidden;
+    position: absolute;
+    font-size: 1px;
+}
+
+.citation{
+    padding: 25px;
+}
+
+.item {
+    border: 5px solid #DDDDDD;
+    font-size: 18pt;
+    padding: 0px;
+    font-family: Georgia;
+    font-style: italic;
+    margin-bottom: 10px;
+    background-color: #FFFFFF;
+    overflow: auto;
+    position: relative;
+}
+
+
+.item img {
+    text-align: center;
+    width: 100%;
+    padding: 0px;
+
+}
+
+.annotation {
+    font-size: 8pt;
+    color: #999;
+    text-align: right;
+    font-family: arial;
+    font-style: normal;
+}
+
+.cowords {
+    font-size: 12pt;
+    line-height: 23px;
+    padding: 5px;
+    padding-top: 10px;
+    font-family: georgia;
+    text-align: center;
+    background-color: rgb(64, 192, 64);
+    position: absolute;
+    top:-5px;
+    left: 20px;
+    z-index: 10;
+    width: 100px;
+    visibility: hidden;
+}
+
+.scroller {
+    display: block;
+    width: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+a:hover {
+    color: rgb(64, 192, 64);
+    cursor: pointer;
+}
+
+.hoverTable {
+    width:20;
+    border-collapse:collapse;
+}
+
+.hoverTable td {
+    padding:7px; border:#4e95f4 0px solid;
+}
+/* Define the default color for all the table rows */
+.hoverTable tr {
+    background: #b8d1f3;
+}
+/* Define the hover highlight color for the table row */
+.hoverTable tr:hover {
+      background-color: #ffff99;
+      font-size: 32pt;
+}
