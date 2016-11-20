@@ -126,7 +126,6 @@ def index():
         for mot in KEYWORD[mots]:
             word_list.append(mot.decode('utf-8'))
     random.shuffle(word_list)
-    print word_list
     return render_template('index0.html', words=word_list)
 
 @app.route('/momentum/<word>')
@@ -210,4 +209,4 @@ def next_word(word):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')

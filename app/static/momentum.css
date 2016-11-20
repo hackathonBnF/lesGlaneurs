@@ -1,5 +1,10 @@
 /* A revoir par quelqu'un qui connaît vraiment ! */
 
+body{
+    font-family: georgia;
+    background-color: #EEEEEE;
+}
+
 .header {
     top: 0;
     left: 0;
@@ -8,7 +13,7 @@
 }
 
 .main {
-    left: 0;
+    margin: 0 auto;
     width: 100%;
 }
 
@@ -22,24 +27,27 @@
 }
 
 .item {
-    border: 3px solid rgb(200, 200, 200);
-    font-size: 20pt;
-    font-family: Garamond;
+    border: 5px solid #CCCCCC;
+    font-size: 18pt;
+    font-family: Georgia;
     font-style: italic;
     padding: 5px;
-    margin-x: 5px;
     margin-bottom: 20px;
-    background-color: rgb(230, 255, 255);
+    background-color: #EEEEEE;
     overflow: auto;
     position: relative;
 }
 
 .item img {
-    float: left;
+    text-align: center;
+    width: 100%;
+    padding: 0px;
+
 }
 
 .item .annotation {
-    font-size: 10pt;
+    font-size: 8pt;
+    color: #333333;
     text-align: right;
     font-family: arial;
     font-style: normal;
@@ -47,13 +55,13 @@
 
 .cowords {
     font-size: 12pt;
-    font-family: arial;
-    align: center;
+    padding: 5px;
+    font-family: georgia;
+    text-align: left;
     background-color: rgb(64, 192, 64);
-    border: 1px solid rgb(0, 64, 0);
     position: relative;
-    top: 20px;
-    left: 40px;
+    top: 50px;
+    left: 20px;
     z-index: 10;
     width: 100px;
     visibility: hidden;
@@ -66,6 +74,7 @@
 
 .title {
     font-size: 32pt;
+    padding: 4px;
     color: white;
     background-color: rgb(64, 192, 64);
 }
@@ -77,6 +86,7 @@ a {
 
 a:hover {
     color: rgb(32, 32, 192);
+    cursor: pointer;
 }
 
 .hoverTable {
