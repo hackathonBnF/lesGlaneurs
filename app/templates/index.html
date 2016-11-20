@@ -8,27 +8,15 @@
 		</div>
 		<hr>
 		<div class="main">
+            {% for band in bands %}
 			<div class="band">
-                {% for quote in band1 %}
+                {% for quote in band %}
                     <div class="item">
-                        {{ quote[1] }}
+                        {{ quote }}
                     </div>
                 {% endfor %}
             </div>
-			<div class="band">
-                {% for quote in band2 %}
-                    <div class="item">
-                        {{ quote[1] }}
-                    </div>
-                {% endfor %}
-            </div>
-            <div class="band">
-                {% for quote in band3 %}
-                    <div class="item">
-                        {{ quote[1] }}
-                    </div>
-                {% endfor %}
-            </div>
+            {% endfor %}
 		</div>
 	</body>
 </html>
