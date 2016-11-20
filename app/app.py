@@ -75,25 +75,40 @@ def momentum(word):
     conn_i = db.get_connection_i()
 
     rows = []
+    cowords = []
+
     # Première ligne : citations du mot choisi
     rows.append(get_quotes_for_word(conn, word))
 
     # Deuxième ligne : co-mots et citations associées
     words2 = get_cowords_for_word(conn, word)
+    cowords.append([(word, word2) for word2 in words2])
     rows.append(get_quotes_for_words(conn, conn_i, words2))
 
     # Troisième & quatrième lignes : co-co-(co-)mots et citations
     words3 = get_cowords_for_words_excluding(conn, words2, [word])
+    cowords.append(zip(words2, words3))
     rows.append(get_quotes_for_words(conn, conn_i, words3))
+
     words4 = get_cowords_for_words_excluding(conn, words3, [word] + words2)
+    cowords.append(zip(words3, words4))
     rows.append(get_quotes_for_words(conn, conn_i, words4))
 
-    # Transformation en bande (colonnes)
+    # Transformation en bandes (colonnes)
     bands = [[row[i] for row in rows] for i in xrange(4)]
+    word_pairs = [[pair[i] for pair in cowords] for i in xrange(4)]
 
     conn.close()
 
-    return render_template('index.html', word=word, bands=bands, last_words=words4)
+    '''
+    print '<<<============='
+    print cowords
+    print '============='
+    print word_pairs
+    print '=============>>>'
+    '''
+
+    return render_template('index.html', word=word, bands=bands, word_pairs=word_pairs, last_words=words4)
 
 
 @app.route('/next/<word>')
