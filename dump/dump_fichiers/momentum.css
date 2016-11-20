@@ -2,7 +2,7 @@
 
 body{
     font-family: georgia;
-    background-color: #FFFFFF;
+    background-color: #EEEEEE;
 }
 
 .header {
@@ -26,17 +26,14 @@ body{
     position: relative;
 }
 
-.legende{
-}
-
 .item {
-    border: 5px solid #DDDDDD;
+    border: 5px solid #CCCCCC;
     font-size: 18pt;
     font-family: Georgia;
     font-style: italic;
     padding: 5px;
     margin-bottom: 20px;
-    background-color: #FFFFFF;
+    background-color: #EEEEEE;
     overflow: auto;
     position: relative;
 }
@@ -47,8 +44,6 @@ body{
     padding: 0px;
 
 }
-
-img
 
 .item .annotation {
     font-size: 8pt;
@@ -64,8 +59,8 @@ img
     font-family: georgia;
     text-align: left;
     background-color: rgb(64, 192, 64);
-    position: absolute;
-    top:-5px;
+    position: relative;
+    top: 50px;
     left: 20px;
     z-index: 10;
     width: 100px;

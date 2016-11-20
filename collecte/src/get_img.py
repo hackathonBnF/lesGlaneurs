@@ -63,7 +63,7 @@ def get_img(mot, page):
                 continue
 
             date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
-            datetext = date.text if date is not None else None
+            datetext = re.sub('\.\.', '50', date.text).split('-')[0] if date is not None else None
             quote = node.find('srw:recordData/oai_dc:dc/dc:title', NAMESPACES)
             quotetext = quote.text.split(':')[0] if quote is not None else None
 

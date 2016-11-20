@@ -27,6 +27,18 @@ KEYWORD['COLERE'] = ['cannibales','colérique',
     'execution '
     ]
 
+KEYWORD['BOURRE'] = ['ivre',
+     'bacchus',
+     'nausée',
+     'trinquer',
+     'alcool',
+     'boire',
+     'absinthe',
+     'ivrogne',
+     'gueux',
+     'boissons'
+     ]
+
 if False:
     KEYWORD['AFFAME'] = ['gourmandise',
         'cocagne',
@@ -44,18 +56,6 @@ if False:
         'gisant',
         'spleen',
         'macabre'
-        ]
-
-    KEYWORD['BOURRE'] = ['ivre',
-        'bacchus',
-        'nausée',
-        'trinquer',
-        'alcool',
-        'boire',
-        'absinthe',
-        'ivrogne',
-        'gueux',
-        'boissons'
         ]
 
     KEYWORD['FATIGUE'] = ['paresse',
