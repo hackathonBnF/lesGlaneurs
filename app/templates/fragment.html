@@ -1,4 +1,8 @@
-<div class="item">
+<div class="cowords">
+    {{ previous_word }}<br>
+    {{ word }}
+</div>
+<div class="item" onmouseover="setCowords(this, 'visible');" onmouseout="setCowords(this, 'hidden');">
     <img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/>
     <a href="{{ 'http://gallica.bnf.fr'~quote[0] }}">{{ quote[1] }}</a>
     {% if quote[5] > 0 %}

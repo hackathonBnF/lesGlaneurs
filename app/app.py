@@ -108,7 +108,7 @@ def momentum(word):
     print '=============>>>'
     '''
 
-    return render_template('index.html', word=word, bands=bands, word_pairs=word_pairs, last_words=words4)
+    return render_template('index.html', bands=bands, word_pairs=word_pairs, last_words=words4)
 
 
 @app.route('/next/<word>')
@@ -129,7 +129,7 @@ def next_word(word):
 
     conn.close()
 
-    return render_template('fragment.html', quote=quote, word=word2)
+    return render_template('fragment.html', quote=quote, word=word2, previous_word=word)
 
 
 if __name__ == '__main__':
