@@ -7,9 +7,11 @@
     </div>
     {% if quote[4] > 0 %}
 		<img src="{{ quote[2] }}" width="100%"/><br/>
-	{% endif %}
-    {# height="{{ quote[3] }}" width="{{ quote[4] }} #}
     <div class="legende">
+	{% else %}
+    {# height="{{ quote[3] }}" width="{{ quote[4] }} #}
+    <div class="citation">
+    {% endif %}
         <a href="{{ 'http://gallica.bnf.fr'~quote[0] }}">{{ quote[1] }}</a>
     </div>
     {% if quote[5] > 0 %}

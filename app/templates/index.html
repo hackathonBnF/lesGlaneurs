@@ -21,14 +21,16 @@
                             {{ word_pairs[outer_loop.index0][loop.index0 - 1][0] }}<br>
                             {{ word_pairs[outer_loop.index0][loop.index0 - 1][1] }}
                         </div>
-						{% else %}
+					{% else %}
 					<div class="item">
                     {% endif %}
 						{% if quote[4] > 0 %}
 							<img src="{{ quote[2] }}" width="100%"/><br/>
-						{% endif %}
+                        <div class="legende">
+                        {% else %}
 						{# height="{{ quote[3] }}" width="{{ quote[4] }} #}
-						<div class="legende">
+						<div class="citation">
+						{% endif %}
 							<a href="{{ 'http://gallica.bnf.fr' ~ quote[0] }}">{{ quote[1] }}</a>
 						</div>
                         {% if quote[5] > 0 %}
