@@ -15,7 +15,7 @@ def get_connection():
     return conn
 
 def get_connection_i():
-    conn_i = sqlite3.connect('../collecte/target/images/images_sample.db')
+    conn_i = sqlite3.connect('../collecte/target/image/images_sample.db')
     return conn_i
 
 def get_quotes(conn, word):

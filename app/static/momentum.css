@@ -25,7 +25,8 @@
     font-family: Garamond;
     font-style: italic;
     padding: 5px;
-    margin: 5px;
+    margin-x: 5px;
+    margin-top: 30px;
     background-color: rgb(230, 255, 255);
 }
 
