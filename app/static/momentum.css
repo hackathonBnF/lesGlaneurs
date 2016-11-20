@@ -28,6 +28,11 @@
     margin-x: 5px;
     margin-top: 30px;
     background-color: rgb(230, 255, 255);
+    overflow: auto;
+}
+
+.item img {
+    float: left;
 }
 
 .item .annotation {
