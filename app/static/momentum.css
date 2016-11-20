@@ -17,7 +17,6 @@ body{
     text-align: center;
     width: 400px;
     margin: 0 auto;
-    color: #111111;
     color: rgb(64, 192, 64);
     margin-bottom: 15px;
     border-bottom: 2px dotted #cccccc;
@@ -117,6 +116,7 @@ body{
     position: relative;
 }
 
+
 .item img {
     text-align: center;
     width: 100%;
@@ -159,7 +159,7 @@ a {
 }
 
 a:hover {
-    color: rgb(32, 32, 192);
+    color: rgb(64, 192, 64);
     cursor: pointer;
 }
 
