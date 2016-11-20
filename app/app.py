@@ -103,7 +103,14 @@ def next_word(word):
 
     # Une quote et un co-word
     word2 = random.choice(db.get_cowords(conn, word))
-    quote = random.choice(db.get_quotes(conn, word2))
+
+    quote = None
+    if random.random() > 0.5:
+        choices = db.get_quotes_i(conn_i, word2)
+        if len(choices) > 0:
+            quote = random.choice(choices)
+    if quote is None:
+        quote = random.choice(db.get_quotes(conn, word2))
 
     conn.close()
 
