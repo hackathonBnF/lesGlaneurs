@@ -8,13 +8,17 @@ body{
 .arrows-left{
     position: fixed;
     top:400px;
+    left: 20px;
     z-index: 99;
 }
 
 .arrows-right{
     position: fixed;
-    top:400px;
+    width: 100px;
+    height: 50px;
+    top:395px;
     right:20px;
+    left: auto;
     z-index: 99;
 }
 
