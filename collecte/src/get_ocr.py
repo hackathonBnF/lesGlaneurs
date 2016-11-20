@@ -28,18 +28,41 @@ IGNORE = nltk.corpus.stopwords.words('french') + ['les', 'qu', 'tout']
 
 conn = db.get_connection()
 
-# TODO : pagination
+
+words = [
+    u'séduction',
+    u'courtisanes',
+    u'érotique',
+    u'coquine',
+    u'coquin',
+    u'baiser',
+    u'bacchanale',
+    u'fouet',
+    u'prostituée',
+    u'cocotte',
+    u'baiser',
+    u'coeur brisé',
+    u'noce',
+    u'colérique',
+    u'vilain',
+    u'guillotine',
+    u'torture',
+    u'assassinat',
+    u'supplice',
+    u'sacrebleu'
+]
 
 
-def get_list_docs(words, limit=3):
+def get_list_docs(word1, word2, limit=3):
     '''
     Récupère une liste de documents OCRisés à partir de mots
-    :param query: Les mots (chaîne)
+    :param query: Les mots
     :return: Un document XML de résultat
     '''
-    print 'Get docs for ' + words
-    query = '(gallica all "' + words + '")'
-    url = '/SRU?operation=searchRetrieve&version=1.2&startRecord=0&maximumRecords=' + str(limit) + '&page=1&collapsing=true&exactSearch=false&query=' + urllib.quote(UTF8.encode(query)[0]) + '&filter=ocr.quality%20all%20%22texte%20disponible%22'
+    print 'Get docs for ' + word1 + ' & ' + word2
+    query = '(gallica all "' + word1 + '" and gallica all "' + word2 + '")'
+    filter = 'sdewey all "84" and ocr.quality all "texte disponible"'
+    url = '/SRU?operation=searchRetrieve&version=1.2&startRecord=0&maximumRecords=' + str(limit) + '&page=1&collapsing=true&exactSearch=false&query=' + urllib.quote(UTF8.encode(query)[0]) + '&filter=' + urllib.quote(filter)
     gallica = httplib.HTTPConnection(HOST)
     gallica.request('GET', url)
     return gallica.getresponse().read()
@@ -59,7 +82,7 @@ def is_valid_ark(ark):
     return ark.startswith('http://' + HOST)
 
 
-def process_body(id, body, date, word):
+def process_body(id, body, date, word1, word2):
     '''
     Traite le corps d'un document
     :param body:
@@ -80,35 +103,26 @@ def process_body(id, body, date, word):
     # Conversion en texte NLTK
     text = nltk.word_tokenize(body)
 
-    # Vire les mots trop petits ou à ignorer
-    # (apply_word_filter marche pas ?)
-    text = [w for w in text if len(w) > 3 and w not in IGNORE]
-
-    # Cowords
-    finder = BigramCollocationFinder.from_words(text)
-    finder.apply_freq_filter(2)
-    colloc = finder.nbest(nltk.collocations.BigramAssocMeasures.likelihood_ratio, n=50)
-
     # Quote
     sents = nltk.sent_tokenize(body)
-    [sent.find(word) for sent in sents]
-    quotes = [sent for sent in nltk.sent_tokenize(body) if sent.find(word) >= 0]
+    quotes1 = [sent for sent in sents if sent.find(word1) >= 0]
+    quotes2 = [sent for sent in sents if sent.find(word2) >= 0]
 
     # Save to DB
     doc_id = db.create_doc(conn, id, len(text), '' if date is None else date.text)
-    for word1, word2 in colloc:
-        db.create_coword(conn, doc_id, word1, word2)
-    print ' -> ' + str(len(colloc)) + ' cowords'
+    db.create_coword(conn, doc_id, word1, word2)
 
-    for quote in quotes:
-        db.create_quote(conn, doc_id, word, quote)
-    print ' -> ' + str(len(quotes)) + ' quotes'
+    for quote in quotes1:
+        db.create_quote(conn, doc_id, word1, quote)
+    for quote in quotes2:
+        db.create_quote(conn, doc_id, word2, quote)
+    print ' -> ' + str(len(quotes1) + len(quotes2)) + ' quotes'
 
     print ' -> doc_id = ' + str(doc_id)
 
 
 
-def get_ocr(doc_list, word):
+def save_ocr(doc_list, word1, word2):
     '''
     Récupère et indexe les OCR issus d'une requête
     :param doc_list: Un doc XML de résultat
@@ -124,24 +138,32 @@ def get_ocr(doc_list, word):
         if ark is None or not is_valid_ark(ark.text):
             print ' -> Bad ID'
             continue
-        if db.get_doc(conn, ark.text) is not None:
+
+        ark_id = ark_to_url(ark.text)
+
+        if db.get_doc(conn, ark_id) is not None:
             print ' -> Already in'
             continue
 
         date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
 
-        print 'Get OCR for ' + ark.text
-        id = ark_to_url(ark.text)
-        url = id + '/.texteBrut'
+        print 'Get OCR for ' + ark_id
+        url = ark_id + '/.texteBrut'
         gallica = httplib.HTTPConnection(HOST)
         gallica.request('GET', url)
         resp = gallica.getresponse()
         if resp.status == 200:
-            process_body(id, UTF8.decode(resp.read())[0], date, word)
+            process_body(ark_id, UTF8.decode(resp.read())[0], date, word1, word2)
         else:
             print ' -> Bad status'
 
-word = u'séduction'
-get_ocr(get_list_docs(word, limit=100), word)
+
+for i in xrange(len(words)):
+    for j in xrange(len(words)):
+        if j <= i:
+            continue
+        docs = get_list_docs(words[i], words[j], limit=10)
+        save_ocr(docs, words[i], words[j])
+
 
 print 'Done'
