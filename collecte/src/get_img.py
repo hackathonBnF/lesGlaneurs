@@ -41,7 +41,6 @@ def get_list_docs(mot, page):
 # Récupération du texte d'un doc
 def get_img(mot, page):
     doc = get_list_docs(mot, page)
-
     tree = xtree.ElementTree()
     root = tree.parse(cStringIO.StringIO(doc))
     nodes = root.findall('srw:records/srw:record/srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
@@ -50,42 +49,42 @@ def get_img(mot, page):
     print numberOfRecords, nextRecordPosition
 
     url = ''
-    for node in nodes:
-        if re.match(r'^http', node.text):
-            id = re.sub('^http://' + HOST, '', node.text)
-            #url = '/iiif' + id + '/f1/full/full/0/native.jpg'
-            url = id + '.thumbnail'
-            #url = id + '.highres'
+    if numberOfRecords > nextRecordPosition:
+        for node in nodes:
+            if re.match(r'^http', node.text):
+                id = re.sub('^http://' + HOST, '', node.text)
+                #url = '/iiif' + id + '/f1/full/full/0/native.jpg'
+                url = id + '.thumbnail'
+                #url = id + '.highres'
 
-            filename = '../target/image/thumb/' + re.sub('/|:', '_', id) + '.jpeg'
-            print filename
+                filename = '../target/image/thumb/' + re.sub('/|:', '_', id) + '.jpeg'
+                #print filename
 
-            urllib.urlretrieve("http://gallica.bnf.fr" + url, filename)
+                urllib.urlretrieve("http://gallica.bnf.fr" + url, filename)
 
-            #ct = ColorThief(filename)
-            #for color in ct.get_palette(color_count=10):
-            #    cc = get_closest_color(color)
-            #    if cc not in ['Black','White','Gray','Maroon','Silver','Olive']:
-            #        print cc
+                #ct = ColorThief(filename)
+                #for color in ct.get_palette(color_count=10):
+                #    cc = get_closest_color(color)
+                #    if cc not in ['Black','White','Gray','Maroon','Silver','Olive']:
+                #        print cc
 
-            # insert image to DB
-            with Image.open(filename) as im:
-                width, height = im.size
-                date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
-                doc_id = db.create_image(conn, id, width, height, date)
-                db.create_keyword(conn, doc_id, mot)
-                ct = colorthief.ColorThief(filename)
-                for color in ct.get_palette(color_count=6, quality=1):
-                    cc = get_closest_color(color)
-                    if cc not in ['Black', 'White', 'Gray', 'Silver']:
-                        db.create_color(conn, doc_id, cc)
-                # sample image to 5 colors
-                #result = ImageOps.posterize(im, 1)
-                #result = im.convert(mode='P', colors=8)
-                #result.convert("RGB").save(filename + '.jpeg')
-
-    if numberOfRecords>0 and int(nextRecordPosition)<int(numberOfRecords)+50:
-        get_img(mot, page+1)
+                # insert image to DB
+                with Image.open(filename) as im:
+                    width, height = im.size
+                    date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
+                    doc_id = db.create_image(conn, id, width, height, date)
+                    db.create_keyword(conn, doc_id, mot)
+                    ct = colorthief.ColorThief(filename)
+                    for color in ct.get_palette(color_count=6, quality=1):
+                        cc = get_closest_color(color)
+                        if cc not in ['Black', 'White', 'Gray', 'Silver']:
+                            db.create_color(conn, doc_id, cc)
+                    # sample image to 5 colors
+                    #result = ImageOps.posterize(im, 1)
+                    #result = im.convert(mode='P', colors=8)
+                    #result.convert("RGB").save(filename + '.jpeg')
+        if int(nextRecordPosition)<int(numberOfRecords)+50:
+            get_img(mot, page+1)
 
 def get_closest_color(mycolor):
     mapping_color = {
@@ -118,4 +117,5 @@ def get_closest_color(mycolor):
 
 for mots in KEYWORD.keys():
     for mot in KEYWORD[mots]:
+        print mot
         get_img(mot, 1)

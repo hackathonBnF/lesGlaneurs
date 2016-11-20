@@ -13,8 +13,8 @@ def get_connection():
 
 def create_db(conn):
     conn.execute('create table if not exists image (id integer primary key autoincrement not null, id_ark varchar(50), width integer, height integer, crdate varchar(50));')
-    conn.execute('create table if not exists keyword (doc_id integer, keyword varchar(50));')
-    conn.execute('create table if not exists color (doc_id integer, color integer);')
+    conn.execute('create table if not exists keyword (doc_id integer, word varchar(50));')
+    conn.execute('create table if not exists color (doc_id integer, color varchar(50));')
 
 
 def create_image(conn, ark, width, height, crdate):
@@ -35,6 +35,6 @@ def create_color(conn, doc_id, color):
     conn.commit()
 
 def create_keyword(conn, doc_id, word):
-    conn.execute("insert into color (doc_id, color) values (%d, '%s')" % (doc_id, word))
+    conn.execute("insert into keyword (doc_id, word) values (%d, '%s')" % (doc_id, word))
     conn.commit()
 
