@@ -14,6 +14,7 @@ import nltk
 from nltk.collocations import *
 from bs4 import BeautifulSoup
 import codecs
+import random
 
 HOST = 'gallica.bnf.fr'
 
@@ -29,7 +30,44 @@ IGNORE = nltk.corpus.stopwords.words('french') + ['les', 'qu', 'tout']
 conn = db.get_connection()
 
 
-words_serie_1 = [
+words = [
+    u'amour',
+    u'voyage',
+    u'rêve',
+    u'joie',
+    u'affamé',
+    u'voyageur',
+    u'tristesse',
+    u'bourré',
+    u'danse',
+	u'carnaval',
+	u'humour',
+	u'cirque',
+	u'kermesse',
+	u'guinguette',
+	u'caricature',
+	u'commémoration',
+	u'anniversaire',
+	u'mort',
+	u'gisant',
+	u'spleen',
+	u'macabre',
+	u'vérole',
+	u'vomir',
+	u'choléra',
+	u'vermine',
+	u'peste',
+	u'souris',
+	u'vache',
+	u'tortue',
+	u'chat',
+	u'zoo',
+	u'loutre',
+	u'vagabond',
+	u'baluchon',
+    u'malade',
+    u'rêveur',
+    u'bisounours',
     u'séduction',
     u'courtisanes',
     u'érotique',
@@ -49,22 +87,16 @@ words_serie_1 = [
     u'torture',
     u'assassinat',
     u'supplice',
-    u'sacrebleu'
-]
-
-words_serie_2 = [
+    u'sacrebleu',
     u'ivre',
-	u'Bacchus',
+	u'bacchus',
 	u'nausée',
 	u'alcool',
 	u'boire',
 	u'absinthe',
 	u'ivrogne',
 	u'gueux',
-	u'boissons'
-]
-
-words = [
+	u'boissons',
     u'baluchon',
 	u'exotiques',
 	u'paysages',
@@ -73,9 +105,23 @@ words = [
 	u'avion',
 	u'hippomobile',
 	u'hôtel particulier',
-	u'trajet'
+	u'trajet',
+	u'gourmandise',
+    u'songe',
+	u'ripaille',
+    u'cauchemar',
+	u'glouton',
+    u'opium',
+	u'gargantua',
+	u'chimère',
+	u'festin',
+	u'rêveur',
+    u'cocagne',
+	u'rêves',
+	u'paresse'
 ]
 
+random.shuffle(words)
 
 def get_list_docs(word1, word2, limit=3):
     '''
