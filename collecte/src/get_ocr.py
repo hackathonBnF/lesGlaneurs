@@ -52,7 +52,7 @@ words_serie_1 = [
     u'sacrebleu'
 ]
 
-words = [
+words_serie_2 = [
     u'ivre',
 	u'Bacchus',
 	u'nausée',
@@ -62,6 +62,18 @@ words = [
 	u'ivrogne',
 	u'gueux',
 	u'boissons'
+]
+
+words = [
+    u'baluchon',
+	u'exotiques',
+	u'paysages',
+	u'traversée',
+	u'train',
+	u'avion',
+	u'hippomobile',
+	u'hôtel particulier',
+	u'trajet'
 ]
 
 

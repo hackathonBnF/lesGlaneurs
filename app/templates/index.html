@@ -15,30 +15,12 @@
             {% set outer_loop = loop %}
 			<div class="band">
                 {% for quote in band %}
-					{% if loop.index0 > 0 %}
-                    <div class="item" onmouseover="setCowords(this, 'visible');" onmouseout="setCowords(this, 'hidden');">
-                        <div class="cowords">
-                            {{ word_pairs[outer_loop.index0][loop.index0 - 1][0] }}<br>
-                            {{ word_pairs[outer_loop.index0][loop.index0 - 1][1] }}
-                        </div>
-					{% else %}
-					<div class="item">
-                    {% endif %}
-						{% if quote[4] > 0 %}
-							<img src="{{ quote[2] }}" width="100%"/><br/>
-                        <div class="legende">
-                        {% else %}
-						{# height="{{ quote[3] }}" width="{{ quote[4] }} #}
-						<div class="citation">
-						{% endif %}
-							<a href="{{ 'http://gallica.bnf.fr' ~ quote[0] }}">{{ quote[1] }}</a>
-						</div>
-                        {% if quote[5] > 0 %}
-                            <div class="annotation">Temps de lecture: {{ quote[5]|read_time }}</div>
-                        {% endif %}
-                    </div>
+                    {% set first_item = loop.index0 == 0 %}
+                    {% set previous_word = word_pairs[outer_loop.index0][loop.index0 - 1][0] %}
+                    {% set word = word_pairs[outer_loop.index0][loop.index0 - 1][1] %}
+                    {% set last_word = loop.last %}
+                    {% include "fragment.html" %}
                 {% endfor %}
-                <a href="/next/{{ last_words[loop.index0]|quote }}">{{ last_words[loop.index0] }}</a>
             </div>
             {% endfor %}
 		</div>

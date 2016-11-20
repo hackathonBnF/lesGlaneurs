@@ -205,7 +205,7 @@ def next_word(word):
     conn.close()
 
     # Affiche le résultat
-    return render_template('fragment.html', quote=quote, word=word2, previous_word=word)
+    return render_template('fragment.html', quote=quote, word=word2, previous_word=word, last_word=True)
 
 
 if __name__ == '__main__':
