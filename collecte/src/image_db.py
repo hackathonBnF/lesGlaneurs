@@ -13,9 +13,9 @@ def get_connection():
 
 def create_db(conn):
     conn.execute('create table if not exists image (id integer primary key autoincrement not null, id_ark varchar(50), width integer, height integer, crdate varchar(50));')
-    conn.execute('create table if not exists keyword (doc_id integer, word varchar(50));')
-    conn.execute('create table if not exists color (doc_id integer, color varchar(50));')
-
+    conn.execute('create table if not exists keyword (image_id integer, word varchar(50));')
+    conn.execute('create table if not exists color (image_id integer, color varchar(50));')
+    conn.execute('create table if not exists quote (image_id integer, url vachar(50), quote varchar(1000));')
 
 def create_image(conn, ark, width, height, crdate):
     if get_image(conn, ark) is None:
@@ -30,11 +30,17 @@ def get_image(conn, ark):
     cur.close()
     return None if id is None else id[0]
 
-def create_color(conn, doc_id, color):
-    conn.execute("insert into color (doc_id, color) values (%d, '%s')" % (doc_id, color))
+def create_color(conn, image_id, color):
+    conn.execute("insert into color (image_id, color) values (%d, '%s')" % (image_id, color))
     conn.commit()
 
-def create_keyword(conn, doc_id, word):
-    conn.execute("insert into keyword (doc_id, word) values (%d, '%s')" % (doc_id, word))
+def create_keyword(conn, image_id, word):
+    conn.execute("insert into keyword (image_id, word) values (%d, '%s')" % (image_id, word))
+    conn.commit()
+
+def create_quote(conn, image_id, url, quote):
+    url = re.sub("'", "''", url)
+    quote = re.sub("'", "''", quote)
+    conn.execute("insert into quote (image_id, url, quote) values (%d, '%s', '%s')" % (image_id, url, quote))
     conn.commit()
 

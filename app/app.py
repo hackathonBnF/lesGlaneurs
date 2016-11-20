@@ -19,8 +19,8 @@ def get_quotes_for_word(conn, word, n=4):
 def get_cowords_for_word(conn, word, n=4):
     return get_any_n(db.get_cowords(conn, word), n)
 
-def get_quotes_for_words(conn, words):
-    return [random.choice(db.get_quotes(conn, word)) for word in words]
+def get_quotes_for_words(conn, conn_i, words):
+    return [random.choice(db.get_quotes(conn, word) + db.get_quotes_i(conn_i, word)) for word in words]
 
 def get_cowords_for_words_excluding(conn, words, excluded):
     cowords = []
@@ -39,6 +39,7 @@ def index():
 @app.route('/momentum/<word>')
 def momentum(word):
     conn = db.get_connection()
+    conn_i = db.get_connection_i()
 
     rows = []
     # Première ligne : citations du mot choisi

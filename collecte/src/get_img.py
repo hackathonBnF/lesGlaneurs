@@ -43,46 +43,52 @@ def get_img(mot, page):
     doc = get_list_docs(mot, page)
     tree = xtree.ElementTree()
     root = tree.parse(cStringIO.StringIO(doc))
-    nodes = root.findall('srw:records/srw:record/srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
+    nodes = root.findall('srw:records/srw:record', NAMESPACES)
     numberOfRecords = root.findall('srw:numberOfRecords', NAMESPACES)[0].text
     nextRecordPosition = root.findall('srw:nextRecordPosition', NAMESPACES)[0].text
     print numberOfRecords, nextRecordPosition
 
     url = ''
-    if numberOfRecords > nextRecordPosition:
+    if numberOfRecords > 0:
         for node in nodes:
-            if re.match(r'^http', node.text):
-                id = re.sub('^http://' + HOST, '', node.text)
-                #url = '/iiif' + id + '/f1/full/full/0/native.jpg'
-                url = id + '.thumbnail'
-                #url = id + '.highres'
+            ark = node.find('srw:recordData/oai_dc:dc/dc:identifier', NAMESPACES)
+            if ark is None or not is_valid_ark(ark.text):
+                print ' -> Bad ID'
+                continue
+            ark_id = ark_to_url(ark.text)
+            if db.get_image(conn, ark_id) is not None:
+                print ' -> Already in'
+                continue
 
-                filename = '../target/image/thumb/' + re.sub('/|:', '_', id) + '.jpeg'
-                #print filename
+            date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
+            datetext = date.text if date is not None else None
+            quote = node.find('srw:recordData/oai_dc:dc/dc:title', NAMESPACES)
+            quotetext = quote.text.split(':')[0] if quote is not None else None
 
-                urllib.urlretrieve("http://gallica.bnf.fr" + url, filename)
+            #url = '/iiif' + ark.text + '/f1/full/full/0/native.jpg'
+            url = ark.text + '.thumbnail'
+            #url = ark.text + '.highres'
 
-                #ct = ColorThief(filename)
-                #for color in ct.get_palette(color_count=10):
-                #    cc = get_closest_color(color)
-                #    if cc not in ['Black','White','Gray','Maroon','Silver','Olive']:
-                #        print cc
+            filename = '../target/image/thumb/' + re.sub('/|:', '_', ark_id) + '.jpeg'
 
-                # insert image to DB
-                with Image.open(filename) as im:
-                    width, height = im.size
-                    date = node.find('srw:recordData/oai_dc:dc/dc:date', NAMESPACES)
-                    doc_id = db.create_image(conn, id, width, height, date)
-                    db.create_keyword(conn, doc_id, mot)
-                    ct = colorthief.ColorThief(filename)
-                    for color in ct.get_palette(color_count=6, quality=1):
-                        cc = get_closest_color(color)
-                        if cc not in ['Black', 'White', 'Gray', 'Silver']:
-                            db.create_color(conn, doc_id, cc)
-                    # sample image to 5 colors
-                    #result = ImageOps.posterize(im, 1)
-                    #result = im.convert(mode='P', colors=8)
-                    #result.convert("RGB").save(filename + '.jpeg')
+            urllib.urlretrieve(url, filename)
+
+
+            # insert image to DB
+            with Image.open(filename) as im:
+                width, height = im.size
+                image_id = db.create_image(conn, ark_id, width, height, datetext)
+                db.create_keyword(conn, image_id, mot)
+                db.create_quote(conn, image_id, url, quotetext)
+                ct = colorthief.ColorThief(filename)
+                for color in ct.get_palette(color_count=6, quality=1):
+                    cc = get_closest_color(color)
+                    if cc not in ['Black', 'White', 'Gray', 'Silver']:
+                        db.create_color(conn, image_id, cc)
+                # sample image to 5 colors
+                #result = ImageOps.posterize(im, 1)
+                #result = im.convert(mode='P', colors=8)
+                #result.convert("RGB").save(filename + '.jpeg')
         if int(nextRecordPosition)<int(numberOfRecords)+50:
             get_img(mot, page+1)
 
@@ -114,6 +120,18 @@ def get_closest_color(mycolor):
             min_dist = dist
             best_color = color
     return best_color
+
+def ark_to_url(ark):
+    '''
+    Convertit un ID ARK en URL sans hôte
+    :param ark:
+    :return:
+    '''
+    return re.sub('^http://' + HOST, '', ark)
+
+
+def is_valid_ark(ark):
+    return ark.startswith('http://' + HOST)
 
 for mots in KEYWORD.keys():
     for mot in KEYWORD[mots]:

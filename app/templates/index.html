@@ -12,7 +12,7 @@
 			<div class="band">
                 {% for quote in band %}
                     <div class="item">
-                        {{ quote }}
+                        <img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/> {{ quote[1] }}
                     </div>
                 {% endfor %}
             </div>
