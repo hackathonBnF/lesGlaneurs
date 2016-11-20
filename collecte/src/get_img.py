@@ -9,13 +9,15 @@ import httplib
 import re
 import urllib
 import xml.etree.ElementTree as xtree
-from dico import KEYWORD
-import image_db as db
-from PIL import Image, ImageOps
+
 import colorthief
-from colormath.color_objects import sRGBColor, LabColor
+from PIL import Image
 from colormath.color_conversions import convert_color
 from colormath.color_diff import delta_e_cie2000
+from colormath.color_objects import sRGBColor, LabColor
+
+import image_db as db
+from ressources.dico import KEYWORD
 
 conn = db.get_connection()
 

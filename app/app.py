@@ -1,12 +1,12 @@
 # -*- coding: utf8 -*-
 
-
 from flask import Flask, render_template
 
 import random
 import text_db as db
 import urllib
 import codecs
+from ressources.dico import KEYWORD
 
 UTF8 = codecs.lookup('utf-8')
 
@@ -48,7 +48,13 @@ def get_cowords_for_words_excluding(conn, words, excluded):
 
 @app.route('/')
 def index():
-    return 'Hello'
+    word_list = []
+    for mots in KEYWORD.keys():
+        for mot in KEYWORD[mots]:
+            word_list.append(mot.decode('utf-8'))
+    random.shuffle(word_list)
+    print word_list
+    return render_template('index0.html', words=word_list)
 
 @app.route('/momentum/<word>')
 def momentum(word):
@@ -84,7 +90,7 @@ def next_word(word):
 
     # Une quote et un co-word
     word2 = random.choice(db.get_cowords(conn, word))
-    quote = random.choice(db.get_quotes(conn, word2))
+    quote = get_quotes_for_words(conn, conn_i, [word2])[0]
 
     conn.close()
 

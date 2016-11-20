@@ -1,4 +1,5 @@
 <div class="item">
-    “{{ quote[1] }}”
+    <img src="{{ quote[2] }}"  height="{{ quote[3] }}" width="{{ quote[4] }}"/>
+    <a href="{{ 'http://gallica.bnf.fr'~quote[0] }}">{{ quote[1] }}</a>
 </div>
 <a href="/next/{{ word|quote }}">{{ word }}</a>
